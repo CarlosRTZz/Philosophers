@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror
 TFLAGS = -pthread
 RM = rm -rf
 
@@ -15,25 +15,26 @@ SRCS =	main.c			\
 		init.c			\
 		message.c		\
 		monitoring.c	\
+		routine.c		\
 
 OBJS = $(addprefix ${OBJS_DIR}/, ${SRCS:%.c=%.o})
 
 all: ${NAME}
 
 ${OBJS_DIR}/%.o: ${SRCS_DIR}/%.c
-	@mkdir -p ${@D} >/dev/null
-	@${CC} ${TFLAGS} ${CFLAGS} -I ${INC_DIR} -c $< -o $@ >/dev/null
+	@mkdir -p ${@D}
+	@${CC} ${TFLAGS} ${CFLAGS} -I ${INC_DIR} -c $< -o $@
 
 ${NAME}: ${OBJS}
-	@${CC} ${TFLAGS} ${CFLAGS} ${OBJS} -o ${NAME} >/dev/null
+	@${CC} ${TFLAGS} ${CFLAGS} ${OBJS} -o ${NAME}
 	@echo "\033[1;32mCompilation successful: $(NAME)\033[0m"
 
 clean:
-	@${RM} ${OBJS_DIR} >/dev/null
+	@${RM} ${OBJS_DIR}
 	@echo "\033[1;33mObject files deleted.\033[0m"
 
 fclean: clean
-	@${RM} ${NAME} >/dev/null
+	@${RM} ${NAME}
 	@echo "\033[1;31m$(NAME) deleted.\033[0m"
 
 re: fclean all

@@ -1,7 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cortiz <cortiz@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/05 11:21:38 by cortiz            #+#    #+#             */
+/*   Updated: 2023/06/05 12:16:51 by cortiz           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
 int	init_data(t_data *data, int ac, char **av)
 {
+	data->th = 0;
+	data->mutex = 0;
+	data->philo = 0;
 	data->is_alive = 1;
 	data->nb_of_philo = ft_atoi(av[1]);
 	data->time_to_die = ft_atoi(av[2]);
@@ -51,7 +66,6 @@ int	init_philo(t_data *data)
 	while (i < data->nb_of_philo)
 	{
 		data->philo[i].id = i + 1;
-		data->philo[i].last_meal = current_time();
 		data->philo[i].left_fork = &data->mutex[i];
 		if (i == data->nb_of_philo - 1)
 			data->philo[i].right_fork = &data->mutex[0];
@@ -74,9 +88,10 @@ int	init_thread(t_data *data)
 	data->start = current_time();
 	while (i < data->nb_of_philo)
 	{
-		if (pthread_create(&data->th[i], NULL, &routine, &data->philo[i]) != 0)
+		data->philo[i].last_meal = current_time();
+		if (pthread_create(&data->th[i], NULL, &routine, &data->philo[i]))
 			return (ft_error("Error creating thread", 0));
-		// printf("th %d created\n", i);
+		ft_usleep(1);
 		i++;
 	}
 	return (1);
